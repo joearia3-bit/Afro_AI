@@ -1,24 +1,61 @@
-async function getAIResponse(userMessage) {
+export default async (req) => {
+  if (req.httpMethod !== "POST") {
+    return {
+      statusCode: 405,
+      body: JSON.stringify({ error: "Method not allowed" })
+    };
+  }
+
   try {
-    const response = await fetch("/.netlify/functions/chat", {
+    const { message } = JSON.parse(req.body || "{}");
+
+    if (!message) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: "Message is required" })
+      };
+    }
+
+    const response = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
       },
       body: JSON.stringify({
-        message: userMessage
+        model: "gpt-5-mini",
+        input: message
       })
     });
 
-    if (!response.ok) {
-      throw new Error("AI server error");
-    }
-
     const data = await response.json();
 
-    return data.reply || "Sorry, I could not get a response.";
+    if (!response.ok) {
+      console.error("OpenAI error:", data);
+
+      return {
+        statusCode: response.status,
+        body: JSON.stringify({
+          error: "AI request failed"
+        })
+      };
+    }
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        reply: data.output_text || "Sorry, I could not generate a response."
+      })
+    };
+
   } catch (error) {
-    console.error("Chat error:", error);
-    return "Sorry, Afro_AI is temporarily unavailable.";
+    console.error("Function error:", error);
+
+    return {
+      statusCode: 500,
+      body: JSON.stringify({
+        error: "Server error"
+      })
+    };
   }
-}
+};
