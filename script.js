@@ -1,8 +1,15 @@
+"use strict";
+
 const chat = document.getElementById("chat");
 const input = document.getElementById("messageInput");
 const sendButton = document.getElementById("sendButton");
 
 
+// Maximum message length
+const MAX_MESSAGE_LENGTH = 1000;
+
+
+// Safely add a message to the chat
 function addMessage(text, user) {
 
   const message = document.createElement("div");
@@ -15,34 +22,54 @@ function addMessage(text, user) {
 
   content.className = "message-content";
 
+  // textContent prevents HTML/JavaScript injection
   content.textContent = text;
 
   message.appendChild(content);
 
   chat.appendChild(message);
 
-  document.getElementById("main").scrollTop =
-    document.getElementById("main").scrollHeight;
+  const main = document.getElementById("main");
+
+  main.scrollTop = main.scrollHeight;
 }
 
 
+// Send message
 function sendMessage() {
 
-  const text = input.value.trim();
+  let text = input.value.trim();
 
-  if (text === "") {
+  // Ignore empty messages
+  if (!text) {
     return;
   }
 
+
+  // Limit message size
+  if (text.length > MAX_MESSAGE_LENGTH) {
+
+    addMessage(
+      "Your message is too long. Please keep it under 1000 characters.",
+      false
+    );
+
+    return;
+  }
+
+
+  // Show user's message
   addMessage(text, true);
 
+  // Clear input
   input.value = "";
 
 
+  // Temporary demo response
   setTimeout(function() {
 
     const answer =
-      "Hello! 👋 I'm Afro AI. I'm working correctly. How can I help you today? 🇵🇬";
+      "Hello! 👋 I'm Afro AI. I'm working securely. How can I help you today? 🇵🇬";
 
     addMessage(answer, false);
 
@@ -50,9 +77,11 @@ function sendMessage() {
 }
 
 
+// Button
 sendButton.addEventListener("click", sendMessage);
 
 
+// Enter key
 input.addEventListener("keydown", function(event) {
 
   if (event.key === "Enter") {
