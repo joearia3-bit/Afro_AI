@@ -3,32 +3,35 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Afro AI</title>
-<link rel="stylesheet" href="style.css">
+<title>Afro AI - Made for All</title>
+<link rel="stylesheet" href="style.css?v=2">
 </head>
 <body>
-<div id="sidebar" class="sidebar">
-<button class="new-chat-btn" onclick="newChat()">+ New Chat</button>
-<p style="margin-top:20px;font-size:12px;opacity:0.6;">Afro AI v1.0</p>
+<div class="app">
+<div class="sidebar" id="sidebar">
+<h2>Afro AI</h2>
+<button onclick="newChat()">+ New Chat</button>
+<p style="font-size:12px;margin-top:20px;opacity:0.7">Made for all 🌍</p>
 </div>
 <div class="main">
-<div class="header">
+<div class="topbar">
 <button onclick="toggleSidebar()">☰</button>
-<h3>Afro AI</h3>
+<span>Afro AI - Made for All</span>
 <button onclick="toggleTheme()">🌙</button>
 </div>
-<div id="chatArea" class="chat-area">
+<div id="chatArea" class="chatArea">
 <div class="welcome">
 <div class="welcome-logo">A</div>
 <h1>Welcome to Afro AI</h1>
-<p>What would you like to talk about?</p>
+<p>What would you like to ask today? Built for all.</p>
 </div>
 </div>
-<div class="input-area">
-<input id="messageInput" type="text" placeholder="Ask Afro AI anything..." onkeypress="handleKey(event)">
-<button onclick="sendMessage()">Send</button>
+<div class="inputArea">
+<input id="messageInput" placeholder="Message Afro AI..." onkeydown="handleKey(event)">
+<button onclick="sendMessage()">↑</button>
 </div>
 </div>
-<script src="script.js"></script>
+</div>
+<script src="script.js?v=2"></script>
 </body>
 </html>
