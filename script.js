@@ -12,6 +12,7 @@ function addMessage(text, sender){
   div.style.margin = "10px 0";
   div.style.borderRadius = "18px";
   div.style.maxWidth = "85%";
+  div.style.wordWrap = "break-word";
   if(sender=="user"){
     div.style.background = "#7c3aed";
     div.style.color = "#fff";
@@ -19,9 +20,8 @@ function addMessage(text, sender){
   } else {
     div.style.background = "#f1f1f1";
     div.style.color = "#222";
-    div.innerHTML = text + `<br><button onclick="navigator.clipboard.writeText('${text.replace(/'/g,"")}')" style="margin-top:6px;font-size:12px">Copy</button>`;
   }
-  if(sender=="user") div.innerText = text;
+  div.innerText = text;
   chatArea.appendChild(div);
   chatArea.scrollTop = chatArea.scrollHeight;
 }
@@ -42,10 +42,11 @@ function removeTyping(){
 
 function getAIReply(msg){
   msg = msg.toLowerCase();
-  if(msg.includes("hello")) return "Hello! I am Afro AI — made for all. How can I help you today?";
-  if(msg.includes("who are you")) return "I am Afro AI, your AI assistant for everyone. Light, fast, and built by you!";
-  if(msg.includes("papua") || msg.includes("png")) return "PNG to the world! Afro AI can help with school, business ideas, coding, and more for everyone.";
-  return "That's a great question! In Phase 2 I'm running on demo mode. In Phase 3 I'll connect to a real AI brain and give smart answers for all.";
+  if(msg.includes("hello") || msg.includes("hi")) return "Hello! I am Afro AI — made for all. How can I help you today?";
+  if(msg.includes("who are you")) return "I am Afro AI, your AI assistant for everyone. Light, fast, and built by you — made for all!";
+  if(msg.includes("papua") || msg.includes("png")) return "PNG to the world! Afro AI can help with school, business, coding and more — made for all.";
+  if(msg.includes("what can you do")) return "I can help with homework, business ideas, coding, writing, and questions — made for all.";
+  return "That's a great question! I am Afro AI — made for all. Tell me what you need help with!";
 }
 
 function sendMessage(){
@@ -57,7 +58,7 @@ function sendMessage(){
   setTimeout(()=>{
     removeTyping();
     addMessage(getAIReply(text), "ai");
-  }, 1000);
+  }, 800);
 }
 
 function handleKey(e){ if(e.key=="Enter") sendMessage(); }
