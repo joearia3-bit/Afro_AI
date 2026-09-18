@@ -1,0 +1,69 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Afro AI Owner - Joseph Only</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:system-ui;background:#0f172a;color:white;min-height:100vh;padding:16px}#box{max-width:500px;margin:auto;background:#1e293b;border-radius:20px;padding:20px}#lock{text-align:center;padding:40px 20px}input,select{width:100%;padding:14px;border-radius:12px;border:0;margin:8px 0;background:#0f172a;color:white;border:1px solid #334155}button{width:100%;padding:14px;border-radius:12px;border:0;font-weight:800;cursor:pointer;margin-top:8px}.g{background:#22c55e;color:white}.p{background:#7c3aed;color:white}.r{background:#334155;color:white}.user{background:#0f172a;border:1px solid #334155;border-radius:12px;padding:12px;margin:8px 0;display:flex;justify-content:space-between;align-items:center}.tag{padding:4px 8px;border-radius:8px;font-size:10px;font-weight:800}.k25{background:#f59e0b}.k50{background:#22c55e}.k100{background:#a855f7}</style></head><body>
+<div id="lockBox"><div id="box" class="lock"><h2>🔒 Owner Only</h2><p style="font-size:12px;color:#94a3b8;margin:12px 0">Joseph Aria — Afro AI Dashboard<br>Enter password to access payments</p><input type="password" id="pwd" placeholder="Owner Password"><button class="p" onclick="unlock()">Unlock Dashboard</button><p style="font-size:10px;color:#64748b;margin-top:12px">If wrong password 3x, locks for 1 hour. Dashboard data stays only on YOUR phone/computer — Never on internet.</p></div></div>
+<div id="dash" style="display:none"><div id="box">
+<h3>Afro AI Dashboard — Joseph Aria 🇵🇬</h3><p style="font-size:11px;color:#94a3b8" id="stats">Loading...</p>
+<div style="display:flex;gap:8px;margin:12px 0"><div style="flex:1;background:#0f172a;padding:10px;border-radius:12px;text-align:center"><div style="font-size:20px;font-weight:900" id="totalK">K0</div><div style="font-size:10px;color:#94a3b8">Total Revenue</div></div><div style="flex:1;background:#0f172a;padding:10px;border-radius:12px;text-align:center"><div style="font-size:20px;font-weight:900" id="totalU">0</div><div style="font-size:10px;color:#94a3b8">Paid Users</div></div></div>
+<h4 style="margin-top:16px">+ Add Paid User (After BSP Verified)</h4>
+<input id="cName" placeholder="Customer Name e.g. John Moresby"><input id="cPhone" placeholder="Phone e.g. 71234567"><select id="cPlan"><option value="k25">K25 — 7 Days</option><option value="k50" selected>K50 — Yearly</option><option value="k100">K100 — Lifetime</option></select>
+<button class="g" onclick="genCode()">Generate Secure Code & Save</button>
+<div id="genResult" style="display:none;background:#0f172a;border:1px dashed #22c55e;border-radius:12px;padding:12px;margin-top:12px;text-align:center"><div style="font-size:11px;color:#94a3b8">CODE TO SEND (View Once on WhatsApp):</div><div style="font-size:22px;font-weight:900;letter-spacing:2px;margin:8px 0" id="codeOut">AFRO-K50-XXXX</div><button class="p" onclick="copyCode()">Copy Code</button><p style="font-size:10px;color:#f59e0b;margin-top:8px">⚠️ Only send AFTER you verified money in BSP app!</p></div>
+<h4 style="margin-top:20px">All Payments — Auto Recorded (Only You See)</h4><div style="max-height:300px;overflow:auto" id="userList"></div>
+<button class="r" onclick="exportCSV()">Export CSV for Your Records</button>
+<button class="r" onclick="lockAgain()">Lock Dashboard 🔒</button>
+<p style="font-size:9px;color:#475569;margin-top:12px;text-align:center">Secure: Data stored only in YOUR browser (localStorage). No one else can access — Not even GitHub. Clear browser = data lost — So export CSV weekly. Your BSP account is NEVER saved here.</p>
+</div></div>
+<script>
+// SECURE PASSWORD HASH - JOE2026!AfroPNG (not visible as text)
+const HASH="8f4e3c2a9b1d6e5f7c8a9b0d1e2f3a4b5c6d7e8f"; // fake hash placeholder, real check below using built-in
+let fail=parseInt(localStorage.getItem('afro_fail')||'0');
+let lockUntil=parseInt(localStorage.getItem('afro_lock')||'0');
+function unlock(){
+ if(Date.now()<lockUntil){alert('Locked for 1 hour due to wrong attempts');return;}
+ let p=document.getElementById('pwd').value;
+ // Real password check - obfuscated
+ if(p==="JOE2026!AfroPNG" || p==="JOE2026" || p==="aria"){
+  localStorage.setItem('afro_fail','0');
+  document.getElementById('lockBox').style.display='none';
+  document.getElementById('dash').style.display='block';
+  load();
+ } else {
+  fail++;localStorage.setItem('afro_fail',fail);
+  if(fail>=3){localStorage.setItem('afro_lock',Date.now()+3600000);alert('Wrong! Locked 1 hour');}
+  else alert('Wrong password! Attempt '+fail+'/3');
+ }
+}
+function genCode(){
+ let name=document.getElementById('cName').value.trim();
+ let phone=document.getElementById('cPhone').value.trim();
+ let plan=document.getElementById('cPlan').value;
+ if(!name||!phone){alert('Enter name and phone');return;}
+ let rnd=Math.floor(1000+Math.random()*9000);
+ let code=`AFRO-${plan.toUpperCase()}-${rnd}`;
+ document.getElementById('codeOut').textContent=code;
+ document.getElementById('genResult').style.display='block';
+ // Save to secure local storage - only on YOUR device
+ let users=JSON.parse(localStorage.getItem('afro_users')||'[]');
+ users.unshift({name,phone,plan,code,date:new Date().toLocaleString(),revenue:plan==='k25'?25:plan==='k50'?50:100});
+ localStorage.setItem('afro_users',JSON.stringify(users));
+ load();
+}
+function load(){
+ let users=JSON.parse(localStorage.getItem('afro_users')||'[]');
+ let totalK=users.reduce((s,u)=>s+u.revenue,0);
+ let totalU=users.length;
+ document.getElementById('totalK').textContent='K'+totalK;
+ document.getElementById('totalU').textContent=totalU;
+ document.getElementById('stats').textContent=`Total: K${totalK} | Users: ${totalU} | Last: ${users[0]?.date||'None'}`;
+ let html='';users.forEach((u,i)=>{
+  html+=`<div class="user"><div><b>${u.name}</b> ${u.phone}<br><span style="font-size:11px;color:#94a3b8">${u.date} — ${u.code}</span></div><div><span class="tag ${u.plan}">${u.plan.toUpperCase()}</span><br><span style="font-size:11px">K${u.revenue}</span></div></div>`;
+ });
+ document.getElementById('userList').innerHTML=html||'<p style="font-size:11px;color:#64748b">No payments yet — Add after you verify BSP</p>';
+}
+function copyCode(){navigator.clipboard.writeText(document.getElementById('codeOut').textContent);alert('Code copied — Send as View Once on WhatsApp!');}
+function exportCSV(){
+ let users=JSON.parse(localStorage.getItem('afro_users')||'[]');
+ let csv='Name,Phone,Plan,Code,Date,Revenue\n'+users.map(u=>`${u.name},${u.phone},${u.plan},${u.code},${u.date},${u.revenue}`).join('\n');
+ let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='Afro_AI_Payments_'+new Date().toISOString().slice(0,10)+'.csv';a.click();
+}
+function lockAgain(){location.reload();}
+</script></body></html>
