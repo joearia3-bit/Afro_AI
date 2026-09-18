@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Afro AI</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="app">
+
+    <aside class="sidebar">
+      <h2>🌍 Afro AI</h2>
+      <button onclick="newChat()">＋ New Chat</button>
+      <div id="chatList"></div>
+    </aside>
+
+    <main class="main">
+
+      <header>
+        <strong>Afro AI</strong>
+        <span id="status">Ready</span>
+      </header>
+
+      <section id="messages" class="messages"></section>
+
+      <div id="loading"></div>
+
+      <footer>
+        <textarea
+          id="input"
+          placeholder="Ask Afro AI..."
+          onkeydown="handleKey(event)"
+        ></textarea>
+
+        <button onclick="sendMessage()">Send</button>
+      </footer>
+
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
