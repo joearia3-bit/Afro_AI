@@ -1,0 +1,35 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><title>Afro AI - PNG AI</title><meta name="description" content="PNG's AI - Works offline"><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:system-ui,-apple-system,sans-serif;background:#0f172a;color:#fff;min-height:100vh;display:flex;flex-direction:column}header{background:#1e293b;padding:12px;text-align:center;position:sticky;top:0;z-index:10;border-bottom:1px solid #334155}.logo{font-weight:900;font-size:18px}span.g{color:#22c55e}#chat{flex:1;overflow:auto;padding:12px;max-width:600px;margin:0 auto;width:100%}.msg{padding:10px 14px;border-radius:16px;margin:8px 0;max-width:85%;font-size:14px;line-height:1.4}.user{background:#7c3aed;margin-left:auto}.ai{background:#1e293b;border:1px solid #334155}#bar{padding:10px;background:#1e293b;border-top:1px solid #334155;position:sticky;bottom:0;display:flex;gap:8px;max-width:600px;margin:0 auto;width:100%}input{flex:1;padding:12px;border-radius:24px;border:1px solid #334155;background:#0f172a;color:#fff;outline:0}button{padding:12px 18px;border-radius:24px;border:0;background:#22c55e;color:#fff;font-weight:800;cursor:pointer}#pay{max-width:600px;margin:0 auto;width:100%;padding:12px;display:none}#payBox{background:#1e293b;border:1px solid #f59e0b;border-radius:16px;padding:16px;text-align:center}</style></head><body>
+<header><div class="logo">Afro AI <span class="g">PNG</span> 🇵🇬 <span style="font-size:10px;background:#22c55e;padding:2px 6px;border-radius:8px">FAST</span></div></header>
+<div id="chat"><div class="msg ai">Gutpla! I'm Afro AI — PNG's AI. Ask me anything — Study, Farming, Business, Tok Pisin. I work even with slow internet! 🚀</div></div>
+<div id="pay"><div id="payBox"><h4>🔒 Premium — Unlock Full Afro AI</h4><p style="font-size:12px;color:#94a3b8;margin:8px 0">Secure BSP Payment — QR sent as View Once on WhatsApp</p><div style="display:flex;gap:8px;margin:12px 0"><button style="flex:1;background:#334155" onclick="selectPlan('k25')">K25<br><span style="font-size:10px">7 Days</span></button><button style="flex:1;background:#22c55e" onclick="selectPlan('k50')">K50<br><span style="font-size:10px">1 Year</span></button><button style="flex:1;background:#a855f7" onclick="selectPlan('k100')">K100<br><span style="font-size:10px">Lifetime</span></button></div><input id="code" placeholder="Enter AFRO-CODE e.g. AFRO-K50-1234" style="margin:8px 0"><button style="width:100%" onclick="unlock()">Unlock Now</button><p style="font-size:10px;color:#64748b;margin-top:8px">WhatsApp owner for QR code — No BSP number on site</p></div></div>
+<div id="bar"><input id="q" placeholder="Ask Afro AI..." onkeypress="if(event.key==='Enter')ask()"><button onclick="ask()">Send</button></div>
+<script>
+// ULTRA-FAST PNG OPTIMIZED
+let plan='k50';
+const chat=document.getElementById('chat'),inp=document.getElementById('q');
+let paid=localStorage.getItem('afro_paid')==='1';
+function selectPlan(p){plan=p;document.querySelectorAll('#payBox button').forEach(b=>b.style.opacity='0.6');event.target.style.opacity='1';event.target.closest('button').style.opacity='1';}
+function unlock(){
+ let c=document.getElementById('code').value.trim().toUpperCase();
+ if(c.startsWith('AFRO-')){localStorage.setItem('afro_paid','1');localStorage.setItem('afro_code',c);paid=true;document.getElementById('pay').style.display='none';add('ai','Code accepted! Premium unlocked! 🔓 You can now ask anything.');}
+ else alert('Invalid code — WhatsApp owner');
+}
+function add(who,t){let d=document.createElement('div');d.className='msg '+who;d.textContent=t;chat.appendChild(d);chat.scrollTop=chat.scrollHeight;}
+function ask(){
+ let t=inp.value.trim();if(!t)return;
+ add('user',t);inp.value='';
+ if(!paid && chat.children.length>6){document.getElementById('pay').style.display='block';add('ai','You reached free limit! Unlock Premium K25/K50/K100 to continue. WhatsApp owner for secure BSP QR (View Once).');return;}
+ setTimeout(()=>{let r=getReply(t);add('ai',r);},300);
+}
+function getReply(q){
+ q=q.toLowerCase();
+ if(q.includes('tok pisin')||q.includes('pidgin'))return 'Tok Pisin: "Gude, mi Afro AI. Mi ken helpim yu long skul, bisnis, na farming. Yu laik askim wanem?"';
+ if(q.includes('kaukau')||q.includes('farming'))return 'PNG Farming tip: Kaukau — Plant in mounds, well drained soil. Harvest 4-5 months. Good for Moresby market K3/kg.';
+ if(q.includes('sme')||q.includes('business'))return 'PNG SME tip: Start small — Buy K100 stock, sell K150. Save K50. BSP account help. Want business plan?';
+ if(q.includes('math')||q.includes('calcul'))return 'Math help: Tell me sum — Example "What is 25% of K500?" I calculate fast even offline!';
+ return 'Afro AI: '+q+' — I help with study, business, farming, math, Tok Pisin. Free mode limited. Unlock K50 yearly for unlimited! 🇵🇬';
+}
+// Offline PWA cache
+if('serviceWorker' in navigator){navigator.serviceWorker.register('data:text/javascript;base64,'+btoa('self.addEventListener("install",e=>{e.waitUntil(caches.open("afro-v1").then(c=>c.addAll(["./"]))) });self.addEventListener("fetch",e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)))})'));}
+if(paid)add('ai','Welcome back! Premium active: '+localStorage.getItem('afro_code'));
+</script></body></html>
