@@ -1,115 +1,29 @@
-/* =================================
-   AFRO AI — PHASE 1 FAST VERSION
-   ================================= */
-
-const CHAT_KEY = "afro_ai_chat";
-const TRIAL_KEY = "afro_ai_trial_start";
-const TRIAL_DAYS = 90;
-
-const chat = document.getElementById("chat");
-const input = document.getElementById("messageInput");
-const sendBtn = document.getElementById("sendBtn");
-
-const newChatBtn = document.getElementById("newChatBtn");
-const clearBtn = document.getElementById("clearBtn");
-
-const paywall = document.getElementById("paywall");
-const closePaywall = document.getElementById("closePaywall");
-
-const freeTrialBtn = document.getElementById("freeTrialBtn");
-const whatsappBtn = document.getElementById("whatsappBtn");
-
-const subscriptionBadge =
-  document.getElementById("subscriptionBadge");
-
-
-/* =================================
-   MEMORY
-   ================================= */
-
-function getChatHistory() {
+async function getAIResponse(userMessage) {
   try {
-    const saved = localStorage.getItem(CHAT_KEY);
+    const response = await fetch("/.netlify/functions/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: userMessage
+      })
+    });
 
-    if (!saved) return [];
+    const data = await response.json();
 
-    const history = JSON.parse(saved);
+    if (!response.ok) {
+      throw new Error(data.error || "AI service error");
+    }
 
-    return Array.isArray(history) ? history : [];
+    return data.answer || "Sorry, I could not generate a response.";
 
   } catch (error) {
-    return [];
+    console.error("Afro AI Error:", error);
+
+    return "Afro AI could not connect to the AI service right now. Please try again.";
   }
-}
-
-
-function saveChatHistory(history) {
-  try {
-    localStorage.setItem(
-      CHAT_KEY,
-      JSON.stringify(history.slice(-50))
-    );
-  } catch (error) {
-    console.log("Memory could not be saved.");
-  }
-}
-
-
-/* =================================
-   TRIAL
-   ================================= */
-
-function getTrialStart() {
-
-  let start =
-    localStorage.getItem(TRIAL_KEY);
-
-  if (!start) {
-
-    start = Date.now().toString();
-
-    localStorage.setItem(
-      TRIAL_KEY,
-      start
-    );
-  }
-
-  return parseInt(start, 10);
-}
-
-
-function getTrialDaysLeft() {
-
-  const elapsed =
-    Date.now() - getTrialStart();
-
-  const daysPassed =
-    Math.floor(
-      elapsed / 86400000
-    );
-
-  return Math.max(
-    0,
-    TRIAL_DAYS - daysPassed
-  );
-}
-
-
-function trialActive() {
-
-  return getTrialDaysLeft() > 0;
-}
-
-
-/* =================================
-   SUBSCRIPTION
-   ================================= */
-
-function isLifetime() {
-
-  try {
-
-    const saved =
+}    const saved =
       localStorage.getItem(
         "afro_ai_subscription"
       );
