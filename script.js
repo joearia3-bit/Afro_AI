@@ -3,19 +3,19 @@ const input = document.getElementById("input");
 const status = document.getElementById("status");
 const loading = document.getElementById("loading");
 
-const STORAGE = "afro_ai_chats";
+const KEY = "afro_ai_chats";
 
-let chats = JSON.parse(localStorage.getItem(STORAGE) || "[]");
+let chats = JSON.parse(localStorage.getItem(KEY) || "[]");
 let currentChat = 0;
 
-let webAI = null;
-let cpuAI = null;
+let ai = null;
+let loadingAI = null;
 
 
-/* ---------------- CHAT MEMORY ---------------- */
+/* ---------- MEMORY ---------- */
 
-function saveChats() {
-  localStorage.setItem(STORAGE, JSON.stringify(chats));
+function save() {
+  localStorage.setItem(KEY, JSON.stringify(chats));
 }
 
 function newChat() {
@@ -25,47 +25,38 @@ function newChat() {
   });
 
   currentChat = 0;
-  saveChats();
+  save();
   render();
 }
 
-function addMessage(role, text) {
-  chats[currentChat].messages.push({
-    role,
-    text
+if (!chats.length) {
+  chats.push({
+    title: "New Chat",
+    messages: []
   });
-
-  if (
-    role === "user" &&
-    chats[currentChat].messages.length === 1
-  ) {
-    chats[currentChat].title = text.slice(0, 30);
-  }
-
-  saveChats();
-  render();
+  save();
 }
 
 
-/* ---------------- DISPLAY ---------------- */
+/* ---------- DISPLAY ---------- */
 
 function render() {
   messagesBox.innerHTML = "";
 
-  chats[currentChat].messages.forEach(message => {
+  chats[currentChat].messages.forEach(m => {
+
     const div = document.createElement("div");
+    div.className = "message " + m.role;
+    div.textContent = m.text;
 
-    div.className = "message " + message.role;
-    div.textContent = message.text;
-
-    if (message.role === "ai") {
+    if (m.role === "ai") {
       const copy = document.createElement("button");
 
       copy.textContent = "Copy";
       copy.className = "copy";
 
       copy.onclick = () =>
-        navigator.clipboard?.writeText(message.text);
+        navigator.clipboard?.writeText(m.text);
 
       div.appendChild(document.createElement("br"));
       div.appendChild(copy);
@@ -79,14 +70,15 @@ function render() {
   const list = document.getElementById("chatList");
   list.innerHTML = "";
 
-  chats.forEach((chat, index) => {
+  chats.forEach((c, i) => {
+
     const button = document.createElement("button");
 
     button.className = "chat-button";
-    button.textContent = "💬 " + chat.title;
+    button.textContent = "💬 " + c.title;
 
     button.onclick = () => {
-      currentChat = index;
+      currentChat = i;
       render();
     };
 
@@ -95,11 +87,33 @@ function render() {
 }
 
 
-/* ---------------- FAST LOCAL TOOLS ---------------- */
+function addMessage(role, text) {
 
-function localTool(text) {
+  chats[currentChat].messages.push({
+    role,
+    text
+  });
 
-  const q = text.toLowerCase();
+  if (
+    role === "user" &&
+    chats[currentChat].messages.length === 1
+  ) {
+    chats[currentChat].title =
+      text.substring(0, 28);
+  }
+
+  save();
+  render();
+}
+
+
+/* ---------- INSTANT TOOLS ---------- */
+
+function instantAnswer(text) {
+
+  const q = text.toLowerCase().trim();
+
+  /* TIME */
 
   if (
     q.includes("what time") ||
@@ -109,30 +123,44 @@ function localTool(text) {
       new Date().toLocaleTimeString();
   }
 
+
+  /* DATE */
+
   if (
     q.includes("what date") ||
-    q.includes("today's date")
+    q.includes("today's date") ||
+    q === "what day is it"
   ) {
     return "Today's date: " +
       new Date().toLocaleDateString();
   }
 
+
+  /* CALCULATOR */
+
   if (q.startsWith("calculate ")) {
+
     try {
+
       const expression = text
-        .slice(10)
+        .substring(10)
         .replace(/[^0-9+\-*/().% ]/g, "");
 
       return "Answer: " +
         Function("return " + expression)();
+
     } catch {
       return "I couldn't calculate that.";
     }
   }
 
+
+  /* WORD COUNT */
+
   if (q.startsWith("word count ")) {
+
     const words = text
-      .slice(11)
+      .substring(11)
       .trim()
       .split(/\s+/)
       .filter(Boolean);
@@ -140,172 +168,196 @@ function localTool(text) {
     return "Word count: " + words.length;
   }
 
+
   return null;
 }
 
 
-/* ---------------- WEBGPU AI ---------------- */
+/* ---------- LOAD AI ONCE ---------- */
 
-async function loadWebAI() {
+async function loadAI() {
 
-  if (webAI) return webAI;
+  if (ai) return ai;
 
-  status.textContent = "Starting AI...";
+  /* IMPORTANT:
+     Don't start the same download twice.
+  */
 
-  try {
+  if (loadingAI) return loadingAI;
 
-    const module =
-      await import("https://esm.run/@mlc-ai/web-llm");
+  loadingAI = (async () => {
 
-    const engine = new module.MLCEngine();
+    status.textContent = "Starting AI...";
 
-    await engine.reload(
-      "Llama-3.2-1B-Instruct-q4f16_1-MLC",
-      {
-        initProgressCallback: progress => {
-          status.textContent =
-            "AI " +
-            Math.round(progress.progress * 100) +
-            "%";
+    /* WEBGPU */
+
+    try {
+
+      const m =
+        await import(
+          "https://esm.run/@mlc-ai/web-llm"
+        );
+
+      const engine = new m.MLCEngine();
+
+      await engine.reload(
+        "Llama-3.2-1B-Instruct-q4f16_1-MLC",
+        {
+          initProgressCallback: p => {
+
+            status.textContent =
+              "AI " +
+              Math.round(p.progress * 100) +
+              "%";
+          }
         }
-      }
-    );
-
-    webAI = engine;
-
-    status.textContent = "AI Ready";
-
-    return engine;
-
-  } catch (error) {
-
-    console.log("WebGPU AI failed:", error);
-    return null;
-  }
-}
-
-
-/* ---------------- CPU FALLBACK ---------------- */
-
-async function loadCPUAI() {
-
-  if (cpuAI) return cpuAI;
-
-  try {
-
-    const module =
-      await import(
-        "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1"
       );
 
-    cpuAI = await module.pipeline(
-      "text-generation",
-      "HuggingFaceTB/SmolLM2-360M-Instruct",
-      {
-        device: "wasm"
-      }
-    );
+      ai = {
+        type: "webgpu",
+        engine
+      };
 
-    return cpuAI;
+      status.textContent = "AI Ready";
 
-  } catch (error) {
+      return ai;
 
-    console.log("CPU AI failed:", error);
-    return null;
-  }
-}
+    } catch (error) {
 
-
-/* ---------------- ASK AI ---------------- */
-
-async function askAI(text) {
-
-  /* FIRST OPTION: WEBGPU */
-
-  try {
-
-    const ai = await loadWebAI();
-
-    if (ai) {
-
-      const history =
-        chats[currentChat].messages
-          .slice(-8)
-          .map(message => ({
-            role:
-              message.role === "user"
-                ? "user"
-                : "assistant",
-            content: message.text
-          }));
-
-      const response =
-        await ai.chat.completions.create({
-
-          messages: [
-            {
-              role: "system",
-              content:
-                "You are Afro AI. Be helpful, accurate, clear and concise. If one method fails, try another available method."
-            },
-            ...history
-          ],
-
-          temperature: 0.5,
-          max_tokens: 300
-        });
-
-      return response.choices[0].message.content;
+      console.log("WebGPU unavailable");
     }
 
-  } catch (error) {
 
-    console.log("WebGPU failed.");
-  }
+    /* CPU FALLBACK */
 
+    try {
 
-  /* SECOND OPTION: CPU */
+      status.textContent =
+        "Using fast fallback...";
 
-  try {
+      const m =
+        await import(
+          "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1"
+        );
 
-    const ai = await loadCPUAI();
-
-    if (ai) {
-
-      const prompt =
-        chats[currentChat].messages
-          .slice(-8)
-          .map(m =>
-            (m.role === "user"
-              ? "User: "
-              : "Assistant: ") + m.text
-          )
-          .join("\n");
-
-      const result =
-        await ai(
-          prompt + "\nAssistant:",
+      const pipe =
+        await m.pipeline(
+          "text-generation",
+          "HuggingFaceTB/SmolLM2-360M-Instruct",
           {
-            max_new_tokens: 200
+            device: "wasm"
           }
         );
 
-      return result[0].generated_text
-        .split("Assistant:")
-        .pop()
-        .trim();
+      ai = {
+        type: "cpu",
+        pipe
+      };
+
+      status.textContent = "AI Ready";
+
+      return ai;
+
+    } catch (error) {
+
+      console.log("CPU AI unavailable");
     }
 
-  } catch (error) {
+    ai = null;
+    return null;
 
-    console.log("CPU fallback failed.");
-  }
+  })();
 
-  return "I couldn't start the AI on this device. Please try again.";
+  return loadingAI;
 }
 
 
-/* ---------------- SEND ---------------- */
+/* ---------- AI RESPONSE ---------- */
+
+async function getAIResponse() {
+
+  const engine = await loadAI();
+
+  if (!engine) {
+    return "The AI could not start on this device.";
+  }
+
+
+  /* Keep history SHORT = faster */
+
+  const history =
+    chats[currentChat].messages
+      .slice(-6)
+      .map(m => ({
+        role:
+          m.role === "user"
+            ? "user"
+            : "assistant",
+        content: m.text
+      }));
+
+
+  /* WEBGPU */
+
+  if (engine.type === "webgpu") {
+
+    const result =
+      await engine.engine.chat.completions.create({
+
+        messages: [
+          {
+            role: "system",
+            content:
+              "You are Afro AI. Answer clearly, helpfully and briefly."
+          },
+          ...history
+        ],
+
+        temperature: 0.3,
+
+        /* Short response = faster */
+
+        max_tokens: 180
+      });
+
+    return result.choices[0]
+      .message.content;
+  }
+
+
+  /* CPU */
+
+  if (engine.type === "cpu") {
+
+    const prompt =
+      history
+        .map(m =>
+          (m.role === "user"
+            ? "User: "
+            : "Assistant: ") +
+          m.content
+        )
+        .join("\n") +
+      "\nAssistant:";
+
+    const result =
+      await engine.pipe(
+        prompt,
+        {
+          max_new_tokens: 120
+        }
+      );
+
+    return result[0]
+      .generated_text
+      .split("Assistant:")
+      .pop()
+      .trim();
+  }
+}
+
+
+/* ---------- SEND ---------- */
 
 async function sendMessage() {
 
@@ -317,31 +369,55 @@ async function sendMessage() {
 
   addMessage("user", text);
 
-  /* FAST LOCAL ANSWER */
 
-  const local = localTool(text);
+  /* INSTANT RESPONSE */
 
-  if (local) {
+  const instant =
+    instantAnswer(text);
 
-    addMessage("ai", local);
+  if (instant) {
+
+    addMessage("ai", instant);
+
     return;
   }
+
+
+  /* AI */
 
   loading.textContent = "Thinking...";
   status.textContent = "Working...";
 
   try {
 
-    const answer = await askAI(text);
+    const answer =
+      await getAIResponse();
 
     addMessage("ai", answer);
 
-  } catch {
+  } catch (error) {
 
-    addMessage(
-      "ai",
-      "I couldn't complete that task. Please try again."
-    );
+    console.log(error);
+
+    /* TRY AGAIN USING FALLBACK */
+
+    ai = null;
+    loadingAI = null;
+
+    try {
+
+      const answer =
+        await getAIResponse();
+
+      addMessage("ai", answer);
+
+    } catch {
+
+      addMessage(
+        "ai",
+        "I couldn't complete that. Please try again."
+      );
+    }
   }
 
   loading.textContent = "";
@@ -349,7 +425,7 @@ async function sendMessage() {
 }
 
 
-/* ---------------- ENTER KEY ---------------- */
+/* ---------- ENTER ---------- */
 
 function handleKey(event) {
 
@@ -357,21 +433,14 @@ function handleKey(event) {
     event.key === "Enter" &&
     !event.shiftKey
   ) {
+
     event.preventDefault();
+
     sendMessage();
   }
 }
 
 
-/* ---------------- START ---------------- */
-
-if (!chats.length) {
-  chats.push({
-    title: "New Chat",
-    messages: []
-  });
-
-  saveChats();
-}
+/* ---------- START ---------- */
 
 render();
