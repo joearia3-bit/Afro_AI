@@ -1,37 +1,51 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Afro AI - Made for All</title>
-<link rel="stylesheet" href="style.css?v=2">
+<link rel="stylesheet" href="style.css?v=10">
 </head>
 <body>
 <div class="app">
-<div class="sidebar" id="sidebar">
-<h2>Afro AI</h2>
-<button onclick="newChat()">+ New Chat</button>
-<p style="font-size:12px;margin-top:20px;opacity:0.7">Made for all 🌍</p>
+  <div class="sidebar" id="sidebar">
+    <div class="side-top">
+      <h2>✨ Afro AI</h2>
+      <button class="new-btn" onclick="newChat()">+ New Chat</button>
+    </div>
+    <div class="side-bottom">
+      <p>Made for all 🌍</p>
+      <small>Built in PNG</small>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <button class="icon" onclick="toggleSidebar()">☰</button>
+      <span class="brand">Afro AI - Made for All</span>
+      <button class="icon" onclick="toggleTheme()">🌙</button>
+    </div>
+
+    <div id="chatArea" class="chatArea">
+      <div class="welcome">
+        <div class="logo">A</div>
+        <h1>Welcome to Afro AI</h1>
+        <p>Your assistant — fast, light, and made for all. Ask anything!</p>
+        <div class="chips">
+          <button onclick="quickAsk('What can you do?')">What can you do?</button>
+          <button onclick="quickAsk('Help me with PNG business ideas')">Business ideas</button>
+          <button onclick="quickAsk('Explain like I am 12')">Explain topic</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="inputWrap">
+      <input id="messageInput" placeholder="Message Afro AI..." onkeydown="handleKey(event)">
+      <button class="send" onclick="sendMessage()">↑</button>
+    </div>
+    <p class="foot">Afro AI can make mistakes. Made for all.</p>
+  </div>
 </div>
-<div class="main">
-<div class="topbar">
-<button onclick="toggleSidebar()">☰</button>
-<span>Afro AI - Made for All</span>
-<button onclick="toggleTheme()">🌙</button>
-</div>
-<div id="chatArea" class="chatArea">
-<div class="welcome">
-<div class="welcome-logo">A</div>
-<h1>Welcome to Afro AI</h1>
-<p>What would you like to ask today? Built for all.</p>
-</div>
-</div>
-<div class="inputArea">
-<input id="messageInput" placeholder="Message Afro AI..." onkeydown="handleKey(event)">
-<button onclick="sendMessage()">↑</button>
-</div>
-</div>
-</div>
-<script src="script.js?v=2"></script>
+<script src="script.js?v=10"></script>
 </body>
 </html>
