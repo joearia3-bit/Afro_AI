@@ -1,0 +1,60 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Afro AI - By Joseph Aria PNG</title><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:system-ui;background:#f7f7f8;height:100vh;display:flex;flex-direction:column}#top{height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;background:white}#mid{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:20px;max-width:600px;margin:auto;width:100%}#logo{width:64px;height:64px;background:linear-gradient(135deg,#9333ea,#6d28d9);border-radius:18px;color:white;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:28px;margin-bottom:12px}.opt{width:100%;display:flex;gap:16px;padding:18px 0;font-size:18px;color:#333;cursor:pointer;border-bottom:1px solid #eee}#chat{display:none;flex:1;overflow:auto;padding:16px;padding-bottom:180px;background:white}.msg{display:flex;gap:12px;margin:16px auto;max-width:700px;width:100%}.av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:11px;flex-shrink:0}.user{background:#000}.ai{background:#7c3aed}.bub{background:#f5f5f5;padding:14px 16px;border-radius:20px;line-height:1.6;flex:1;white-space:pre-wrap;font-size:15px}.userB{background:#e3f2fd}.speakBtn{margin-top:8px;border:0;background:#ede9fe;padding:6px 12px;border-radius:20px;color:#6d28d9;font-weight:700;font-size:11px;cursor:pointer;margin-right:6px}#bottom{padding:10px;background:#f7f7f8;position:sticky;bottom:0}.row{display:flex;align-items:center;gap:8px;max-width:720px;margin:auto}#bar{flex:1;background:white;border-radius:28px;display:flex;align-items:center;padding:5px 10px;box-shadow:0 2px 12px #0001;border:1px solid #e5e5e5}#input{flex:1;border:0;outline:none;padding:11px;font-size:16px;background:transparent}.ib{width:40px;height:40px;border-radius:50%;border:0;cursor:pointer;display:flex;align-items:center;justify-content:center}#send{background:#000;color:white}.micOut{background:#7c3aed;color:white;width:48px;height:48px;font-size:18px;display:flex}.shareBtn{background:#e3f2fd;color:#0b57d0;padding:8px 14px;border-radius:20px;border:0;font-weight:700;font-size:12px;cursor:pointer}#paywall{position:fixed;inset:0;background:#000c;display:none;align-items:center;justify-content:center;z-index:99;padding:16px}#payBox{background:white;border-radius:20px;padding:20px;max-width:380px;width:100%;text-align:center}#tier{border:2px solid #eee;border-radius:14px;padding:12px;margin:10px 0;text-align:left;cursor:pointer}#tier.active{border-color:#7c3aed;background:#f5f3ff}#ownerBadge{display:none;background:#22c55e;color:white;padding:4px 10px;border-radius:12px;font-size:10px;font-weight:800}</style></head><body>
+<div id="top"><button style="width:38px;height:38px;border-radius:50%;background:#f1f1f1;border:0"><i class="fa-solid fa-bars"></i></button><div style="display:flex;gap:8px;align-items:center"><span id="ownerBadge">OWNER UNLIMITED ♾️</span><button class="shareBtn" onclick="shareSite()"><i class="fa-solid fa-share-nodes"></i> Share</button></div><button style="width:38px;height:38px;border-radius:50%;background:#f1f1f1;border:0"><i class="fa-regular fa-user"></i></button></div>
+<div id="mid"><div id="logo">A</div><h3>Afro AI — Made for All</h3><p style="font-size:12px;color:#666;margin:6px 0 8px;text-align:center">By Joseph Aria — PNG 🇵🇬</p><p id="trialTxt" style="font-size:12px;color:#7c3aed;font-weight:700;margin-bottom:18px"></p>
+<div class="opt" onclick="checkAndAsk('What is AI? Explain simple for PNG village kid')"><i class="fa-solid fa-headphones" style="width:24px"></i> Voice Chat — Open</div>
+<div class="opt" onclick="checkAndAsk('Create a beautiful image of PNG village')"><i class="fa-regular fa-image" style="width:24px"></i> Create Image — Open</div>
+<div class="opt" onclick="checkAndAsk('Help me write a letter to my wantok')"><i class="fa-solid fa-pen" style="width:24px"></i> Write Pro — Open</div>
+<button onclick="shareSite()" style="margin-top:20px;background:#000;color:white;border:0;padding:12px 22px;border-radius:24px;font-weight:700"><i class="fa-solid fa-share-nodes"></i> Share Afro AI</button>
+<p id="guestNote" style="font-size:11px;color:#888;margin-top:14px;text-align:center"></p>
+</div>
+<div id="chat"></div>
+<div id="bottom">
+<div class="row">
+<div id="bar"><button class="ib" onclick="openPay()"><i class="fa-solid fa-lock"></i></button><input id="input" placeholder="Ask Afro AI anything..."><button class="ib" id="send" onclick="sendMsg()"><i class="fa-solid fa-arrow-up"></i></button></div>
+<button class="ib micOut" id="mic"><i class="fa-solid fa-microphone"></i></button>
+</div>
+<div style="text-align:center;font-size:10px;color:#888;margin-top:8px"><span id="bottomTxt">Afro AI — Joseph Aria PNG</span></div>
+</div>
+
+<div id="paywall"><div id="payBox">
+<h3 id="payTitle">Free Trial</h3><p id="payDesc" style="font-size:12px;color:#666;margin:6px 0 14px">1 month free full access</p>
+<div class="tier" id="t1" onclick="sel(1)"><b>K25 Registration</b> — 7 days full access</div>
+<div class="tier" id="t2" onclick="sel(2)"><b>K50 Yearly</b> — 12 months full Afro AI</div>
+<div class="tier" id="t3" onclick="sel(3)"><b>K100 Lifetime</b> — Forever access ♾️</div>
+<input id="phone" placeholder="Phone / Email" style="width:100%;padding:12px;border-radius:12px;border:1px solid #ddd;margin-top:10px">
+<button onclick="payNow()" style="width:100%;margin-top:12px;background:#7c3aed;color:white;border:0;padding:14px;border-radius:12px;font-weight:800">Activate Now</button>
+<p style="font-size:10px;color:#888;margin-top:10px"><a href="#" onclick="ownerLogin();return false">Owner Login — Joseph Aria Only</a></p>
+<button id="closePayBtn" onclick="closePay()" style="margin-top:10px;background:transparent;border:0;color:#888">Close</button>
+</div></div>
+
+<script>
+let selected=2,plan=localStorage.getItem('afro_plan')||'none',isOwner=localStorage.getItem('afro_owner')==='yes',trialStart=localStorage.getItem('afro_trial');
+if(!trialStart){trialStart=Date.now();localStorage.setItem('afro_trial',trialStart);}else trialStart=parseInt(trialStart);
+function daysLeft(){return 30-Math.floor((Date.now()-trialStart)/86400000);}
+function isTrialActive(){if(isOwner)return true;if(plan!=='none')return true;return daysLeft()>0;}
+function updateUI(){
+ let dl=daysLeft(),trialTxt=document.getElementById('trialTxt'),guestNote=document.getElementById('guestNote'),bottomTxt=document.getElementById('bottomTxt'),ownerBadge=document.getElementById('ownerBadge');
+ if(isOwner){ownerBadge.style.display='block';trialTxt.textContent='♾️ OWNER UNLIMITED — Full Access JOE';guestNote.textContent='Only you see unlimited. Customers cannot see this.';bottomTxt.textContent='OWNER MODE ♾️ Unlimited — Joseph Aria';return;}
+ if(plan!=='none'){trialTxt.textContent='✅ Registered — '+plan.toUpperCase()+' Active';guestNote.textContent='Full Afro AI unlocked — Thank you!';bottomTxt.textContent='Registered — Full Access';return;}
+ if(dl>0){trialTxt.textContent='🎁 FREE TRIAL — '+dl+' days left — Full Access Open';guestNote.textContent='All features OPEN for 1 month: Voice, Image, Write Pro!';bottomTxt.textContent='Free Trial — '+dl+' days left';}else{trialTxt.textContent='🔒 Trial Expired';}
+}
+updateUI();
+function shareSite(){let url='https://joearia3-bit.github.io/Afro_AI/';if(navigator.share){navigator.share({title:'Afro AI PNG',text:'Try Afro AI - Made in PNG 🇵🇬',url})}else{navigator.clipboard.writeText(url);alert('Link copied:\n'+url);}}
+function openPay(){document.getElementById('paywall').style.display='flex';}function closePay(){if(!isTrialActive()&&plan==='none'&&!isOwner)return;document.getElementById('paywall').style.display='none';}
+function sel(n){selected=n;document.querySelectorAll('.tier').forEach(e=>e.classList.remove('active'));document.getElementById('t'+n).classList.add('active');}sel(2);
+function ownerLogin(){let p=prompt('Owner code:');if(p==='JOE2026'||p==='aria'){localStorage.setItem('afro_owner','yes');isOwner=true;alert('Owner Unlimited ON — Only you see ♾️');location.reload();}else alert('Wrong');}
+function payNow(){let ph=document.getElementById('phone').value;if(!ph){alert('Enter phone');return;}let map={1:'k25',2:'k50',3:'k100'};plan=map[selected];localStorage.setItem('afro_plan',plan);alert('Plan '+plan.toUpperCase()+' Active!');location.reload();}
+const mid=document.getElementById('mid'),chat=document.getElementById('chat'),input=document.getElementById('input');
+function add(role,text,isUser){if(mid.style.display!=='none'){mid.style.display='none';chat.style.display='block';}let m=document.createElement('div');m.className='msg';let av=document.createElement('div');av.className='av '+(role==='user'?'user':'ai');av.textContent=role==='user'?'YOU':'AI';let b=document.createElement('div');b.className='bub '+(isUser?'userB':'');b.textContent=text;m.appendChild(av);m.appendChild(b);chat.appendChild(m);chat.scrollTop=chat.scrollHeight;return b;}
+async function realBrain(q){try{let r=await fetch('https://text.pollinations.ai/'+encodeURIComponent('You are Afro AI by Joseph Aria PNG. Simple English. Q: '+q));let t=await r.text();return t.substring(0,2500);}catch(e){return 'Brain slow, try again. Q: '+q;}}
+async function sendMsg(){if(!isTrialActive()){openPay();return;}let q=input.value.trim();if(!q)return;add('user',q,true);input.value='';let b=add('ai','Thinking... 🧠');let ans=await realBrain(q);b.textContent=ans;
+// BUTTONS - Read aloud feature REMOVED, but button stays for option
+let row=document.createElement('div');row.style.marginTop='8px';
+let btn1=document.createElement('button');btn1.className='speakBtn';btn1.textContent='🔊 Read Aloud';btn1.onclick=()=>{alert('🔊 Read Aloud feature is disabled for now. Button kept for future option.');};
+let btn2=document.createElement('button');btn2.className='speakBtn';btn2.innerHTML='<i class="fa-solid fa-share-nodes"></i> Share';btn2.onclick=()=>{if(navigator.share)navigator.share({text:ans});else{navigator.clipboard.writeText(ans);alert('Copied!');}};
+row.appendChild(btn1);row.appendChild(btn2);b.appendChild(document.createElement('br'));b.appendChild(row);chat.scrollTop=chat.scrollHeight;}
+function checkAndAsk(t){if(!isTrialActive()){openPay();return;}input.value=t;sendMsg();}
+input.onkeydown=e=>{if(e.key==='Enter')sendMsg();};
+let mic=document.getElementById('mic');if('webkitSpeechRecognition' in window){let R=new webkitSpeechRecognition();R.lang='en-PG';mic.onclick=()=>{R.start();mic.innerHTML='🔴';};R.onresult=e=>{input.value=e.results[0][0].transcript;mic.innerHTML='<i class="fa-solid fa-microphone"></i>';sendMsg();};R.onend=()=>mic.innerHTML='<i class="fa-solid fa-microphone"></i>';}
+if(!isTrialActive())openPay();
+</script></body></html>
