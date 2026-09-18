@@ -3,113 +3,76 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Afro AI</title>
-
-  <meta
-    name="description"
-    content="Afro AI - Simple AI assistant for everyone."
-  >
-
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-  <!-- SIDEBAR -->
-  <aside id="sidebar">
-
+  <header class="top-bar">
     <div class="brand">
       <div class="logo">A</div>
       <div>
-        <strong>Afro AI</strong>
-        <small>AI Assistant</small>
+        <h1>Afro AI</h1>
+        <p>Your AI Assistant</p>
       </div>
     </div>
 
-    <button id="newChatBtn" class="side-button">
-      + New Chat
-    </button>
-
-    <button id="clearBtn" class="side-button secondary">
-      🗑 Clear Memory
-    </button>
-
-    <div class="sidebar-info">
-      <p>🇵🇬 Built for everyone</p>
-      <p>🤖 Afro AI</p>
-      <p>💰 K50 Lifetime</p>
-    </div>
-
-  </aside>
+    <div class="free-badge">FREE</div>
+  </header>
 
 
-  <!-- MAIN APP -->
   <main id="main">
 
-    <!-- HEADER -->
-    <header>
+    <section class="welcome">
 
-      <div class="mobile-brand">
-        <div class="logo">A</div>
-        <strong>Afro AI</strong>
-      </div>
+      <div class="big-logo">A</div>
 
-      <div id="subscriptionBadge" class="badge">
-        FREE
-      </div>
+      <h2>Welcome to Afro AI</h2>
 
-    </header>
+      <p>
+        Your simple AI assistant.
+      </p>
 
-
-    <!-- CHAT AREA -->
-    <section id="chat">
-
-      <div class="welcome">
-
-        <div class="big-logo">
-          A
-        </div>
-
-        <h1>Welcome to Afro AI</h1>
-
-        <p>
-          Your simple AI assistant.
-        </p>
-
-        <div class="trial-card">
-          🎉 <strong>Free Trial</strong>
-          <br>
-          Enjoy Afro AI free for 3 months.
-        </div>
-
+      <div class="trial-box">
+        <strong>🎉 Free Trial</strong>
+        <p>Enjoy Afro AI free for 3 months.</p>
       </div>
 
     </section>
 
 
-    <!-- MESSAGE BOX -->
-    <footer>
+    <section id="chat"></section>
 
-      <div class="input-area">
+  </main>
 
-        <textarea
-          id="messageInput"
-          rows="1"
-          placeholder="Message Afro AI..."
-        ></textarea>
 
-        <button id="sendBtn" aria-label="Send message">
-          ↑
-        </button>
+  <footer>
 
-      </div>
+    <div class="input-area">
 
-      <p class="footer-text">
-        Afro AI can make mistakes. Check important information.
-      </p>
+      <input
+        id="messageInput"
+        type="text"
+        placeholder="Message Afro AI..."
+        autocomplete="off"
+      >
 
-    </footer>
+      <button id="sendButton">↑</button>
+
+    </div>
+
+    <p class="footer-text">
+      Powered by Afro AI • Blessed PNG 🇵🇬
+    </p>
+
+  </footer>
+
+
+  <script src="script.js"></script>
+
+</body>
+</html>    </footer>
 
   </main>
 
