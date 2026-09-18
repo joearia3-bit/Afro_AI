@@ -1,88 +1,94 @@
 <!DOCTYPE html>
 <html><head><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Afro AI - ChatGPT Edition</title>
+<title>Afro AI - GPT4 + Voice</title>
 <style>
-*{box-sizing:border-box;margin:0}
-:root{--black:#0a0a0a;--red:#E10600;--gold:#FFB81C;--yellow:#FFD700;--card:#1a1a1a}
-body{font-family:system-ui;background:var(--black);color:#fff;display:flex;height:100vh;overflow:hidden}
-/* SIDEBAR like ChatGPT */
-#side{width:260px;background:#000;border-right:1px solid #222;display:flex;flex-direction:column;padding:10px;transition:.3s}
-#side.mob{position:fixed;left:-280px;top:0;bottom:0;z-index:99;width:260px}#side.mob.open{left:0}
-.btn{background:var(--gold);color:#000;border:0;padding:12px;border-radius:10px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:8px}
-.btn2{background:var(--card);color:#fff;border:1px solid #333;padding:10px;border-radius:10px;cursor:pointer;margin-top:8px;text-align:left;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.hist{flex:1;overflow-y:auto;margin-top:12px;display:flex;flex-direction:column;gap:6px}
-.histTitle{font-size:11px;color:#888;letter-spacing:1px;margin-top:10px}
-/* MAIN */
-#main{flex:1;display:flex;flex-direction:column;background:linear-gradient(180deg,#0a0a0a 0%,#1a1200 100%)}
-header{padding:12px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #222;background:rgba(0,0,0,.8);backdrop-filter:blur(10px)}
-.logo{width:36px;height:36px;border-radius:50%;background:conic-gradient(var(--red),var(--gold),var(--yellow),var(--red));display:grid;place-items:center;font-weight:900;color:#000}
-.model{font-weight:800}.model span{background:linear-gradient(90deg,var(--gold),var(--yellow));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-#chat{flex:1;overflow-y:auto;padding:20px}
-.msg{max-width:760px;margin:18px auto;display:flex;gap:14px}
-.avatar{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-size:14px;flex-shrink:0}
-.youAv{background:var(--gold);color:#000;font-weight:800}.aiAv{background:var(--red);color:#fff;font-weight:900}
-.bubble{flex:1;line-height:1.6;font-size:15px;white-space:pre-wrap}
-.bubble b{color:var(--gold)}.tools{margin-top:8px;display:flex;gap:8px}
+*{box-sizing:border-box;margin:0}body{font-family:system-ui;background:#0a0a0a;color:#fff;display:flex;height:100vh;overflow:hidden}
+#side{width:260px;background:#000;border-right:1px solid #222;padding:10px;display:flex;flex-direction:column}
+.btn{background:linear-gradient(90deg,#FFB81C,#FFD700);color:#000;border:0;padding:12px;border-radius:10px;font-weight:900;cursor:pointer}
+.btn2{background:#1a1a1a;border:1px solid #333;padding:8px;border-radius:8px;margin-top:6px;font-size:12px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#main{flex:1;display:flex;flex-direction:column;background:radial-gradient(circle at top,#1a1200,#0a0a0a)}
+header{padding:10px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #222;background:#000}
+.logo{width:32px;height:32px;border-radius:50%;background:conic-gradient(#E10600,#FFB81C,#FFD700,#E10600);display:grid;place-items:center;font-weight:900;color:#000}
+.badge{background:#E10600;padding:3px 8px;border-radius:10px;font-size:10px}
+#chat{flex:1;overflow-y:auto;padding:18px}
+.msg{max-width:760px;margin:16px auto;display:flex;gap:12px}
+.av{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;flex-shrink:0;font-weight:800}
+.youAv{background:#FFD700;color:#000}.aiAv{background:#E10600;color:#fff}
+.bub{flex:1;line-height:1.6;white-space:pre-wrap;font-size:15px}
+.tools{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
 .tbtn{background:#222;border:1px solid #333;color:#aaa;padding:4px 8px;border-radius:6px;font-size:11px;cursor:pointer}
-footer{padding:12px;background:#000;border-top:1px solid #222}
-.box{max-width:760px;margin:0 auto;display:flex;gap:8px;align-items:end;background:#1a1a1a;border:1px solid #333;border-radius:24px;padding:8px 12px}
-textarea{flex:1;background:transparent;border:0;color:#fff;outline:none;resize:none;max-height:120px;padding:8px;font-size:15px}
-.send{background:var(--gold);border:0;width:36px;height:36px;border-radius:50%;cursor:pointer;font-weight:900}
-.hint{max-width:760px;margin:8px auto 0;color:#666;font-size:11px;text-align:center}
-@media(max-width:700px){#side{display:none}#side.mob{display:flex}}
+footer{padding:10px;background:#000;border-top:1px solid #222}
+.box{max-width:760px;margin:0 auto;display:flex;gap:8px;align-items:center;background:#1a1a1a;border:1px solid #333;border-radius:24px;padding:6px 10px}
+textarea{flex:1;background:transparent;border:0;color:#fff;outline:none;resize:none;font-size:15px;padding:8px}
+.icon{width:36px;height:36px;border-radius:50%;border:0;cursor:pointer;display:grid;place-items:center;font-size:16px}
+.mic{background:#222;color:#fff}.mic.on{background:#E10600;animation:pulse 1s infinite}
+.send{background:#FFB81C;color:#000;font-weight:900}
+.speak{background:#222;color:var(--gold)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+.mode{display:flex;gap:6px;margin-left:auto}.modeBtn{padding:4px 8px;border-radius:12px;border:1px solid #333;background:#1a1a1a;color:#888;font-size:10px;cursor:pointer}.modeBtn.active{border-color:#FFD700;color:#FFD700;background:#222}
+@media(max-width:700px){#side{display:none}}
 </style></head><body>
-<div id="side"><button class="btn" onclick="newChat()">+ New chat</button><div class="hist" id="hist"></div><div class="btn2" style="border-color:var(--gold);color:var(--gold)">🇵🇬 Joe Aria • Afro AI • 2026</div></div>
-<div id="side" class="mob" id="mobSide"><button class="btn" onclick="newChat()">+ New chat</button><div class="hist" id="histM"></div></div>
+<div id="side"><button class="btn" onclick="location.reload()">+ New chat</button><div style="margin-top:12px;font-size:11px;color:#666">HISTORY</div><div id="hist"></div><div class="btn2" style="border-color:#FFB81C;color:#FFB81C;margin-top:auto">🇵🇬 Joe Aria • GPT4 Voice • Yellow Gold Red Black</div></div>
 <div id="main">
-<header><span onclick="document.querySelector('.mob').classList.toggle('open')" style="cursor:pointer">☰</span><div class="logo">A</div><div class="model"><span>Afro AI</span> <small style="color:#888;font-weight:400">ChatGPT Edition • Yellow/Gold/Red/Black</small></div><small style="margin-left:auto;background:var(--red);padding:4px 8px;border-radius:10px;font-size:10px">LIVE</small></header>
-<div id="chat"></div>
-<footer><div class="box"><textarea id="q" rows="1" placeholder="Message Afro AI..."></textarea><button class="send" onclick="ask()">↑</button></div><div class="hint">Afro AI can make mistakes. Built by Joe in Port Moresby — Afro colors: Yellow Gold Red Black • No API key needed</div></footer>
+<header><div class="logo">A</div><b>Afro AI</b> <span class="badge">GPT-4 + VOICE</span><div class="mode"><button class="modeBtn active" id="mOnline" onclick="setMode('online')">ONLINE SMART</button><button class="modeBtn" id="mOffline" onclick="setMode('offline')">OFFLINE</button></div></header>
+<div id="chat"><div class="msg"><div class="av aiAv">A</div><div class="bub"><b style="color:#FFD700">Afro AI GPT-4 + Voice is LIVE!</b>
+
+🧠 Full ChatGPT-4 brain (free pollinations.ai)
+🗣️ Voice: Tap 🎤 to speak, 🔊 to hear answer
+🎨 Colors: Yellow=wealth Gold=royalty Red=strength Black=people
+
+Try: "Explain AI in Tok Pisin" then tap mic!</div></div></div>
+<footer><div class="box"><button class="icon mic" id="micBtn" onclick="startVoice()">🎤</button><textarea id="q" rows="1" placeholder="Message or tap mic to speak..."></textarea><button class="icon speak" onclick="speakLast()">🔊</button><button class="icon send" onclick="ask()">↑</button></div><div style="text-align:center;color:#555;font-size:10px;margin-top:6px">Built by Joe • Port Moresby • Afro Gold Edition • Voice + GPT4 • No key needed</div></footer>
 </div>
 <script>
-let chats=JSON.parse(localStorage.getItem('afro_hist')||'[]');
-let curId=Date.now(); let curMsgs=[];
-const chatEl=document.getElementById('chat');
-function renderHist(){
- let h=chats.map(c=>`<div class="btn2" onclick="loadChat(${c.id})">💬 ${c.title.slice(0,32)}</div>`).join('');
- document.getElementById('hist').innerHTML='<div class="histTitle">CHAT HISTORY</div>'+h;
- let m=document.getElementById('histM'); if(m) m.innerHTML=h;
-}
-function newChat(){
- if(curMsgs.length){ chats.unshift({id:curId,title:curMsgs[0]?.u||'New chat',msgs:curMsgs}); localStorage.setItem('afro_hist',JSON.stringify(chats.slice(0,20))); }
- curId=Date.now(); curMsgs=[]; chatEl.innerHTML=`<div class="msg"><div class="avatar aiAv">A</div><div class="bubble"><b style="color:var(--gold)">Afro AI • ChatGPT Smart</b>\n\nI'm your Afro-themed ChatGPT! Same features:\n✅ New chat / History (saved)\n✅ Copy / Regenerate\n✅ Smart answers online + offline\n\nTry: "The Anish way" or "Make me a logo yellow gold red black"</div></div>`; renderHist();
-}
-function loadChat(id){ let c=chats.find(x=>x.id==id); if(!c)return; curId=c.id; curMsgs=c.msgs; chatEl.innerHTML=''; curMsgs.forEach(m=>addMsg(m.u,'you',false).then(()=>addMsg(m.a,'ai',false))); document.querySelector('.mob').classList.remove('open'); }
-async function addMsg(text,who,save=true){
- let av=who==='you'?`<div class="avatar youAv">J</div>`:`<div class="avatar aiAv">A</div>`;
- let id='m'+Date.now()+Math.random();
- let tools=who==='ai'?`<div class="tools"><button class="tbtn" onclick="navigator.clipboard.writeText(this.parentElement.previousElementSibling.innerText);this.innerText='Copied!'">📋 Copy</button><button class="tbtn" onclick="regen()">🔄 Regenerate</button></div>`:'';
- chatEl.innerHTML+=`<div class="msg" id="${id}">${av}<div style="flex:1"><div class="bubble">${text.replace(/\n/g,'<br>')}</div>${tools}</div></div>`;
+let mode='online', lastAns='', rec;
+let chats=JSON.parse(localStorage.getItem('afro2')||'[]');
+function setMode(m){mode=m; document.getElementById('mOnline').classList.toggle('active',m=='online'); document.getElementById('mOffline').classList.toggle('active',m=='offline');}
+const chatEl=document.getElementById('chat'), histEl=document.getElementById('hist');
+function addMsg(t,who){
+ let av=who=='you'?'<div class="av youAv">J</div>':'<div class="av aiAv">A</div>';
+ let tools=who=='ai'?`<div class="tools"><button class="tbtn" onclick="navigator.clipboard.writeText(this.closest('.msg').querySelector('.bub').innerText)">📋 Copy</button><button class="tbtn" onclick="speakText(this.closest('.msg').querySelector('.bub').innerText)">🔊 Speak</button><button class="tbtn" onclick="document.getElementById('q').value=lastQ;ask()">🔄 Regen</button></div>`:'';
+ chatEl.innerHTML+=`<div class="msg">${av}<div style="flex:1"><div class="bub">${t.replace(/</g,'&lt;').replace(/\n/g,'<br>')}</div>${tools}</div></div>`;
  chatEl.scrollTop=chatEl.scrollHeight;
 }
 let lastQ='';
 async function ask(){
  let ta=document.getElementById('q'); let v=ta.value.trim(); if(!v) return;
- lastQ=v; ta.value=''; ta.style.height='auto';
- await addMsg(v,'you'); curMsgs.push({u:v,a:''});
- let loadId='load'+Date.now();
- chatEl.innerHTML+=`<div class="msg" id="${loadId}"><div class="avatar aiAv">A</div><div class="bubble" style="color:var(--gold)">● ● ● Thinking...</div></div>`;
- chatEl.scrollTop=chatEl.scrollHeight;
+ lastQ=v; ta.value=''; addMsg(v,'you');
+ chats.unshift({t:v.slice(0,30)}); localStorage.setItem('afro2',JSON.stringify(chats.slice(0,15))); histEl.innerHTML=chats.map(c=>`<div class="btn2">${c.t}</div>`).join('');
+ let loadId='L'+Date.now(); chatEl.innerHTML+=`<div class="msg" id="${loadId}"><div class="av aiAv">A</div><div class="bub" style="color:#FFB81C">● ● ● Afro AI GPT-4 thinking...</div></div>`;
  let ans='';
- try{
-  let r=await fetch('https://text.pollinations.ai/'+encodeURIComponent(`You are Afro AI, ChatGPT-level, Afro colors yellow gold red black, built by Joe Aria PNG. Be concise, helpful, smart. User: ${v}`),{signal:AbortSignal.timeout(8000)});
-  if(r.ok) ans=await r.text();
- }catch(e){}
+ if(mode=='online'){
+  try{
+   let r=await fetch('https://text.pollinations.ai/'+encodeURIComponent(`You are Afro AI, built by Joe Aria from Port Moresby PNG, GPT-4 level assistant, Afro colors Yellow Gold Red Black, friendly, smart, concise, helpful. User: ${v}`),{signal:AbortSignal.timeout(12000)});
+   if(r.ok) ans=await r.text();
+  }catch(e){ ans=''; }
+ }
  if(!ans){
-  // Offline ChatGPT-level fallback
-  if(v.toLowerCase().includes('anish')) ans=`**The Anish Way - ChatGPT Deep Answer**\n\n**Mino-Bimaadiziwin** = The Good Life. 7 Grandfather Teachings:\n\n1. 🦉 Wisdom - Use knowledge wisely (like you using GitHub)\n2. ❤️ Love - Love your people, land, Afro roots\n3. 💪 Respect - Respect elders, wantok, nature\n4. 🦅 Bravery - You fixed 400 error = bravery!\n5. 🐢 Honesty - Be true\n6. 🐺 Humility - We are small part of big world\n7. 🦬 Truth - Truth = foundation\n\n**PNG Application:** Lead Afro AI with community first, 7 generations thinking.`;
-  else ans=`**Afro AI (ChatGPT Smart) • 2026**\n\nYou asked: "${v}"\n\nHere's smart answer:\n\n${v.length>5?`In context of PNG and Afro culture (Yellow=wealth, Gold=royalty, Red=strength, Black=people), the answer is about building with community.\n\n**3 key points:**\n1. **Why it matters** - Afro AI is PNG's ChatGPT offline\n2. **How to do it** - Use what you have (phone + GitHub Pages)\n3. **Next step** - ${v.toLowerCase().includes('logo')?'I can make you logo in yellow/gold/red/black - tell me text':'Want me to expand this into full plan?'}`:`Ask me anything deeper - code, essay, business, Tok Pisin, I answer like ChatGPT!`}`;
+  ans=`**Afro AI (Offline Smart Fallback)**\nYou asked: "${v}"\n\nSmart answer: In Afro culture Yellow=wealth, Gold=royalty, Red=strength, Black=people. For "${v}", key is community + tech. PNG schools need offline AI like yours.\n\nWant online GPT-4? Need data on. Current mode is ${mode}.`;
  }
  document.getElementById(loadId).remove();
- await addMsg(ans,'ai',false);
- curMsgs[curMsgs.length-1].a=ans;
+ lastAns=ans; addMsg(ans,'ai');
+ // Auto speak if voice was used
+ if(window.autoSpeak) speakText(ans);
 }
-function regen(){ if(lastQ){ document.getElementById('q').value=lastQ; ask(); } }
-document.getElementById('q').addEventListener('input',function(){this.style.height='auto';this.style.height=this.scrollHeight+'px'});
+function speakText(t){
+ if(!window.speechSynthesis) return alert('Voice not supported on this browser');
+ speechSynthesis.cancel();
+ let u=new SpeechSynthesisUtterance(t.replace(/\*\*/g,'').slice(0,600));
+ u.rate=0.95; u.pitch=1; speechSynthesis.speak(u);
+}
+function speakLast(){ if(lastAns) speakText(lastAns); }
+function startVoice(){
+ let btn=document.getElementById('micBtn');
+ if(!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) return alert('Mic needs Chrome browser - open in Chrome');
+ let SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(rec) { rec.stop(); return; }
+ rec=new SR(); rec.lang='en-PG'; rec.onstart=()=>{btn.classList.add('on'); btn.innerText='●'; window.autoSpeak=true;};
+ rec.onend=()=>{btn.classList.remove('on'); btn.innerText='🎤'; rec=null;};
+ rec.onresult=e=>{ document.getElementById('q').value=e.results[0][0].transcript; ask(); };
+ rec.start();
+}
 document.getElementById('q').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();ask()}});
-newChat(); renderHist();
+histEl.innerHTML=chats.map(c=>`<div class="btn2">${c.t}</div>`).join('');
 </script></body></html>
