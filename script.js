@@ -1,115 +1,65 @@
-async function getAIResponse(userMessage) {
-  try {
-    const response = await fetch("/.netlify/functions/chat", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        message: userMessage
-      })
-    });
+const chat = document.getElementById("chat");
+const input = document.getElementById("messageInput");
+const sendButton = document.getElementById("sendButton");
 
-    const data = await response.json();
 
-    if (!response.ok) {
-      throw new Error(data.error || "AI service error");
-    }
+function addMessage(text, user) {
 
-    return data.answer || "Sorry, I could not generate a response.";
+  const message = document.createElement("div");
 
-  } catch (error) {
-    console.error("Afro AI Error:", error);
+  message.className = user
+    ? "message user"
+    : "message ai";
 
-    return "Afro AI could not connect to the AI service right now. Please try again.";
-  }
-}    const saved =
-      localStorage.getItem(
-        "afro_ai_subscription"
-      );
+  const content = document.createElement("div");
 
-    if (!saved) return false;
+  content.className = "message-content";
 
-    const data =
-      JSON.parse(saved);
+  content.textContent = text;
 
-    return (
-      data &&
-      data.type === "lifetime" &&
-      data.verified === true
-    );
+  message.appendChild(content);
 
-  } catch (error) {
+  chat.appendChild(message);
 
-    return false;
-  }
+  document.getElementById("main").scrollTop =
+    document.getElementById("main").scrollHeight;
 }
 
 
-function canUseAfroAI() {
+function sendMessage() {
 
-  return (
-    isLifetime() ||
-    trialActive()
-  );
-}
+  const text = input.value.trim();
 
-
-/* =================================
-   STATUS
-   ================================= */
-
-function updateStatus() {
-
-  if (isLifetime()) {
-
-    subscriptionBadge.textContent =
-      "K50 LIFETIME ✓";
-
+  if (text === "") {
     return;
   }
 
-  const days =
-    getTrialDaysLeft();
+  addMessage(text, true);
 
-  if (days > 0) {
+  input.value = "";
 
-    subscriptionBadge.textContent =
-      `FREE • ${days} DAYS`;
 
-  } else {
+  setTimeout(function() {
 
-    subscriptionBadge.textContent =
-      "TRIAL ENDED";
+    const answer =
+      "Hello! 👋 I'm Afro AI. I'm working correctly. How can I help you today? 🇵🇬";
+
+    addMessage(answer, false);
+
+  }, 500);
+}
+
+
+sendButton.addEventListener("click", sendMessage);
+
+
+input.addEventListener("keydown", function(event) {
+
+  if (event.key === "Enter") {
+    sendMessage();
   }
-}
 
-
-/* =================================
-   PAYWALL
-   ================================= */
-
-function showPaywall() {
-
-  paywall.classList.remove(
-    "hidden"
-  );
-}
-
-
-function hidePaywall() {
-
-  paywall.classList.add(
-    "hidden"
-  );
-}
-
-
-/* =================================
-   SAFE TEXT
-   ================================= */
-
-function escapeHTML(text) {
+});function escapeHTML(text) {
 
   const div =
     document.createElement("div");
