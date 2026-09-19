@@ -1,115 +1,28 @@
-const messagesBox = document.getElementById("messages");
-const input = document.getElementById("input");
-const status = document.getElementById("status");
-const loading = document.getElementById("loading");
-
-const KEY = "afro_ai_chats";
-
-let chats = JSON.parse(localStorage.getItem(KEY) || "[]");
-let currentChat = 0;
-
-let ai = null;
-let loadingAI = null;
-
-
-/* ---------- MEMORY ---------- */
-
-function save() {
-  localStorage.setItem(KEY, JSON.stringify(chats));
-}
-
-function newChat() {
-  chats.unshift({
-    title: "New Chat",
-    messages: []
-  });
-
-  currentChat = 0;
-  save();
-  render();
-}
-
-if (!chats.length) {
-  chats.push({
-    title: "New Chat",
-    messages: []
-  });
-  save();
-}
-
-
-/* ---------- DISPLAY ---------- */
-
-function render() {
-  messagesBox.innerHTML = "";
-
-  chats[currentChat].messages.forEach(m => {
-
-    const div = document.createElement("div");
-    div.className = "message " + m.role;
-    div.textContent = m.text;
-
-    if (m.role === "ai") {
-      const copy = document.createElement("button");
-
-      copy.textContent = "Copy";
-      copy.className = "copy";
-
-      copy.onclick = () =>
-        navigator.clipboard?.writeText(m.text);
-
-      div.appendChild(document.createElement("br"));
-      div.appendChild(copy);
-    }
-
-    messagesBox.appendChild(div);
-  });
-
-  messagesBox.scrollTop = messagesBox.scrollHeight;
-
-  const list = document.getElementById("chatList");
-  list.innerHTML = "";
-
-  chats.forEach((c, i) => {
-
-    const button = document.createElement("button");
-
-    button.className = "chat-button";
-    button.textContent = "💬 " + c.title;
-
-    button.onclick = () => {
-      currentChat = i;
-      render();
-    };
-
-    list.appendChild(button);
-  });
-}
-
-
-function addMessage(role, text) {
-
-  chats[currentChat].messages.push({
-    role,
-    text
-  });
-
-  if (
-    role === "user" &&
-    chats[currentChat].messages.length === 1
-  ) {
-    chats[currentChat].title =
-      text.substring(0, 28);
+async function sendMessage() {
+  const input = document.getElementById('userInput') || document.querySelector('input');
+  const chat = document.getElementById('chatBox') || document.getElementById('chat');
+  const text = input.value.trim();
+  if(!text) return;
+  chat.innerHTML += `<div style="text-align:right;margin:8px"><span style="background:#000;color:#fff;padding:8px 12px;border-radius:15px">${text}</span></div>`;
+  input.value = '';
+  
+  // Try AI first
+  try {
+    const res = await fetch('/.netlify/functions/chat', {
+      method: 'POST',
+      body: JSON.stringify({message: text})
+    });
+    const data = await res.json();
+    chat.innerHTML += `<div style="text-align:left;margin:8px"><span style="background:#fff;border:1px solid #ddd;padding:8px 12px;border-radius:15px">${data.reply}</span></div>`;
+  } catch(e) {
+    // FALLBACK - if on GitHub, reply locally
+    let reply = "Hello! I'm Afro AI 🇵🇬 ";
+    if(text.toLowerCase().includes('hello')||text.toLowerCase().includes('hi')) reply = "Hello Joe! Afro AI here! On GitHub I work offline. For full AI, use Netlify link: d2779.netlify.app";
+    else reply = `You said: "${text}" - On GitHub version I reply offline. Deploy to Netlify for real AI!`;
+    chat.innerHTML += `<div style="text-align:left;margin:8px"><span style="background:#fff;border:1px solid #ddd;padding:8px 12px;border-radius:15px">${reply}</span></div>`;
   }
-
-  save();
-  render();
-}
-
-
-/* ---------- INSTANT TOOLS ---------- */
-
-function instantAnswer(text) {
+  chat.scrollTop = chat.scrollHeight;
+}function instantAnswer(text) {
 
   const q = text.toLowerCase().trim();
 
