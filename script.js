@@ -1,115 +1,43 @@
-async function sendMessage() {
-  const input = document.getElementById('userInput') || document.querySelector('input');
-  const chat = document.getElementById('chatBox') || document.getElementById('chat');
-  const text = input.value.trim();
-  if(!text) return;
-  chat.innerHTML += `<div style="text-align:right;margin:8px"><span style="background:#000;color:#fff;padding:8px 12px;border-radius:15px">${text}</span></div>`;
-  input.value = '';
-  
-  // Try AI first
-  try {
-    const res = await fetch('/.netlify/functions/chat', {
-      method: 'POST',
-      body: JSON.stringify({message: text})
-    });
-    const data = await res.json();
-    chat.innerHTML += `<div style="text-align:left;margin:8px"><span style="background:#fff;border:1px solid #ddd;padding:8px 12px;border-radius:15px">${data.reply}</span></div>`;
-  } catch(e) {
-    // FALLBACK - if on GitHub, reply locally
-    let reply = "Hello! I'm Afro AI 🇵🇬 ";
-    if(text.toLowerCase().includes('hello')||text.toLowerCase().includes('hi')) reply = "Hello Joe! Afro AI here! On GitHub I work offline. For full AI, use Netlify link: d2779.netlify.app";
-    else reply = `You said: "${text}" - On GitHub version I reply offline. Deploy to Netlify for real AI!`;
-    chat.innerHTML += `<div style="text-align:left;margin:8px"><span style="background:#fff;border:1px solid #ddd;padding:8px 12px;border-radius:15px">${reply}</span></div>`;
-  }
-  chat.scrollTop = chat.scrollHeight;
-}function instantAnswer(text) {
+const chat=document.getElementById('chat');
+const inp=document.getElementById('inp');
 
-  const q = text.toLowerCase().trim();
-
-  /* TIME */
-
-  if (
-    q.includes("what time") ||
-    q.includes("current time")
-  ) {
-    return "Current time: " +
-      new Date().toLocaleTimeString();
-  }
-
-
-  /* DATE */
-
-  if (
-    q.includes("what date") ||
-    q.includes("today's date") ||
-    q === "what day is it"
-  ) {
-    return "Today's date: " +
-      new Date().toLocaleDateString();
-  }
-
-
-  /* CALCULATOR */
-
-  if (q.startsWith("calculate ")) {
-
-    try {
-
-      const expression = text
-        .substring(10)
-        .replace(/[^0-9+\-*/().% ]/g, "");
-
-      return "Answer: " +
-        Function("return " + expression)();
-
-    } catch {
-      return "I couldn't calculate that.";
-    }
-  }
-
-
-  /* WORD COUNT */
-
-  if (q.startsWith("word count ")) {
-
-    const words = text
-      .substring(11)
-      .trim()
-      .split(/\s+/)
-      .filter(Boolean);
-
-    return "Word count: " + words.length;
-  }
-
-
-  return null;
+function addMsg(text, isUser){
+  if(document.querySelector('.welcome')) document.querySelector('.welcome').style.display='none';
+  const d=document.createElement('div');
+  d.className=isUser?'msg user':'msg';
+  d.innerHTML=`<div class="avatar">${isUser?'J':'A'}</div><div class="text">${text}</div>`;
+  chat.appendChild(d);
+  chat.scrollTop=chat.scrollHeight;
 }
 
-
-/* ---------- LOAD AI ONCE ---------- */
-
-async function loadAI() {
-
-  if (ai) return ai;
-
-  /* IMPORTANT:
-     Don't start the same download twice.
-  */
-
-  if (loadingAI) return loadingAI;
-
-  loadingAI = (async () => {
-
-    status.textContent = "Starting AI...";
-
-    /* WEBGPU */
-
-    try {
-
-      const m =
-        await import(
-          "https://esm.run/@mlc-ai/web-llm"
-        );
+async function send(){
+  const q=inp.value.trim();
+  if(!q) return;
+  addMsg(q,true);
+  inp.value='';
+  
+  // typing indicator
+  const typing=document.createElement('div');
+  typing.className='msg';
+  typing.id='typing';
+  typing.innerHTML=`<div class="avatar">A</div><div class="text">...</div>`;
+  chat.appendChild(typing);
+  
+  try{
+    const res=await fetch('/.netlify/functions/chat',{method:'POST',body:JSON.stringify({message:q})});
+    const data=await res.json();
+    document.getElementById('typing')?.remove();
+    addMsg(data.reply||data.message||'Hello! I am Afro AI',false);
+  }catch(e){
+    document.getElementById('typing')?.remove();
+    let r='';
+    const l=q.toLowerCase();
+    if(l.includes('hello')||l.includes('hi')) r='Hello! 👋 I am Afro AI - your ChatGPT for PNG. How can I help you today?';
+    else if(l.includes('who')) r='I am Afro AI, built by Joe from Blessed PNG. I am a ChatGPT clone for Papua New Guinea 🇵🇬';
+    else r=`You said: "${q}"\n\nI am Afro AI. I can help you write business plans, build websites, create APKs, and answer questions. For full AI power, deploy this site to Netlify (d2779.netlify.app).`;
+    addMsg(r,false);
+  }
+}        );
 
       const engine = new m.MLCEngine();
 
